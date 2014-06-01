@@ -38,11 +38,9 @@ module Warbler
           raise 'jbundler support needs jruby to create a local config: jruby -S jbundle install'
         end
         # use only the jars from jbundler and jruby
-        config.java_libs.clear
-        config.java_libs = Warbler::Traits::Jar.default_jar_files
-        JBUNDLER_CLASSPATH.each do |jar|
-          config.java_libs << jar
-        end
+        config.java_libs += jruby_jars
+        config.java_libs += JBUNDLER_CLASSPATH
+        config.java_libs.uniq! {|lib| lib.split(File::SEPARATOR).last }
         config.init_contents << "#{config.warbler_templates}/jbundler.erb"
       end
     end
